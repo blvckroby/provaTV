@@ -99,4 +99,5 @@ builder.defineMetaHandler(async (args) => {
 
 
 // 4️⃣ Avvio server
-serveHTTP(builder.getInterface(), { port: 7000 });
+module.exports = builder.getInterface();
+
