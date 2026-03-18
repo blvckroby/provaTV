@@ -1,0 +1,68 @@
+{
+  "id": "org.stremio.vavoo.clean",
+  "version": "3.0.23",
+  "name": "blvckTVvoo | ElfHosted",
+  "description": "Stremio addon that lists VAVOO TV channels and resolves clean HLS using the viewer's IP.",
+  "background": "https://raw.githubusercontent.com/qwertyuiop8899/StreamViX/refs/heads/main/public/backround.png",
+  "logo": "https://i.imgur.com/udlsVw7.png",
+  "types": [
+    "tv"
+  ],
+  "idPrefixes": [
+    "vavoo",
+    "vavoo_"
+  ],
+  "catalogs": [
+    {
+      "id": "vavoo_tv_it",
+      "type": "tv",
+      "name": "blvckTvVoo • Italia",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": false
+        },
+        {
+          "name": "genre",
+          "options": [
+            "Tutti",
+            "Altro",
+            "Bambini",
+            "Documentari",
+            "Film - Serie TV",
+            "Mediaset",
+            "Musica",
+            "News",
+            "Rai",
+            "Sport"
+          ],
+          "isRequired": true
+        }
+      ]
+    },
+    {
+      "id": "vavoo_search_it",
+      "type": "tv",
+      "name": "🔎 Italia",
+      "extra": [
+        {
+          "name": "search",
+          "isRequired": true
+        }
+      ]
+    }
+  ],
+  "resources": [
+    "catalog",
+    "meta",
+    "stream"
+  ],
+  "behaviorHints": {
+    "configurable": true,
+    "configurationRequired": false
+  },
+  "stremioAddonsConfig": {
+    "issuer": "https://stremio-addons.net",
+    "signature": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..AEkVpgWVbgdJjE3cp31T4Q.CPmNnZ_2DJV3-gvqMSQf3p23an-90tk1gFl9nd0GEgw27DAn6gBnKPMQsSn0bJwOC4xuGpGpswN5FqTaae6rPs1WQGbvAMINuihb2WTvMpBw3rE1Plt8S_rRvsW1FBWO.QTNtrqn1tT7IiJcZ-kO6PA"
+  }
+}
