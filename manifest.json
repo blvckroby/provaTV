@@ -1,0 +1,16 @@
+{
+    "id": "org.roby.proxy.tvvoo",
+    "version": "1.0.0",
+    "name": "Roby TVVoo Proxy",
+    "description": "Proxy personalizzato dell'addon TVVoo",
+    "resources": ["catalog", "meta", "stream"],
+    "types": ["tv"],
+    "catalogs": [
+        {
+            "type": "tv",
+            "id": "tvvoo-proxy",
+            "name": "TVVoo Proxy"
+        }
+    ],
+    "idPrefixes": ["vavoo"]
+}
