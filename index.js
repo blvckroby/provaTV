@@ -1,72 +1,58 @@
 const { addonBuilder } = require("stremio-addon-sdk");
-const fs = require("fs");
+const fetch = require("node-fetch");
 
-// Carica i canali dal file JSON
-function loadChannels() {
-  const data = fs.readFileSync(__dirname + "/list.json", "utf8");
-  return JSON.parse(data);
+const listUrl = "https://raw.githubusercontent.com/blvckroby/provaTV/refs/heads/main/list.json";
+
+let list = [];
+
+async function loadList() {
+  try {
+    const response = await fetch(listUrl);
+    list = await response.json();
+    console.log("Lista caricata:", list);
+    startAddon();
+  } catch (error) {
+    console.error("Errore nel caricamento della lista:", error);
+  }
 }
 
-const channels = loadChannels();
+function startAddon() {
+  const builder = new addonBuilder({
+    id: 'org.myaddon.streams',
+    version: '1.0.0',
+    name: 'My Streams',
+    description: 'Addon per streaming da URL',
+    resources: ['stream'],
+    types: ['channel'],
+  });
 
-const manifest = {
-  "id": "org.stremio.vavoo.clean",
-  "version": "3.0.23",
-  "name": "blvkcTVvoo | ElfHosted",
-  "description": "Stremio addon that lists VAVOO TV channels and resolves clean HLS using the viewer's IP.",
-  "background": "https://raw.githubusercontent.com/qwertyuiop8899/StreamViX/refs/heads/main/public/backround.png",
-  "logo": "https://i.imgur.com/udlsVw7.png",
-  "types": ["tv"],
-  "idPrefixes": ["vavoo", "vavoo_"],
-  "resources": ["catalog", "stream"],
-  "behaviorHints": {
-    "configurable": false,
-    "configurationRequired": false
-  },
-  "main": "index.js"
-};
+  // Catalog handler
+  builder.defineCatalogHandler(() => {
+    const metas = list.map(c => ({
+      id: c.name,
+      name: c.name,
+      logo: c.logo,
+      type: 'channel',
+    }));
+    console.log("Metadati del catalogo:", metas);
+    return Promise.resolve({ metas });
+  });
 
-const builder = new addonBuilder(manifest);
+  // Stream handler
+  builder.defineStreamHandler((args) => {
+    console.log("Richiesta stream per id:", args.id);
+    const channel = list.find(c => c.name === args.id);
+    if (channel) {
+      console.log("Trovato canale:", channel);
+      return Promise.resolve({ streams: [{ url: channel.stream_url }] });
+    } else {
+      console.log("Canale non trovato");
+      return Promise.resolve({ streams: [] });
+    }
+  });
 
-// Risponde al catalogo
-builder.defineCatalogHandler(async (args) => {
-  const { id } = args;
+  module.exports = builder.getInterface();
+}
 
-  if (id === "vavoo_tv_it") {
-    // Catalogo con tutti i canali
-    return Promise.resolve({
-      metas: channels.map((channel, index) => ({
-        id: `channel_${index}`,
-        name: channel.name,
-        poster: channel.logo,
-        type: "tv"
-      }))
-    });
-  }
-
-  // Se vuoi altri cataloghi, aggiungi qui
-
-  return { metas: [] };
-});
-
-// Risponde allo stream
-builder.defineStreamHandler(async (args) => {
-  const { id } = args;
-
-  // Trova il canale dall'id
-  const channel = channels.find((ch, index) => `channel_${index}` === id);
-  if (channel) {
-    return Promise.resolve({
-      streams: [
-        {
-          url: channel.stream_url,
-          title: channel.name
-        }
-      ]
-    });
-  }
-
-  return { streams: [] };
-});
-
-module.exports = builder.getInterface();
+// Avvia il caricamento della lista
+loadList();
